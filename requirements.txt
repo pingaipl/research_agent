@@ -4,3 +4,5 @@ python-dotenv
 langchain
 bs4
 tiktoken
+chainlit
+uvicorn
