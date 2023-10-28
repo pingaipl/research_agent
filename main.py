@@ -1,9 +1,5 @@
 
 import os
-from pyexpat import model
-from statistics import mode
-from tabnanny import verbose
-from turtle import onclick
 from dotenv import load_dotenv
 import json
 import requests
@@ -190,6 +186,6 @@ async def research(query: Query):
 
 
 
-# if __name__ == "__main__":
-#     run(app)
-#     # search(query)
+if __name__ == "__main__":
+    run(app)
+    # search(query)
