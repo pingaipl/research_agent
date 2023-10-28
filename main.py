@@ -23,6 +23,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from uvicorn import run
+from fastapi import Response
 
 load_dotenv()
 
@@ -87,6 +88,7 @@ def scrape_website(objective:str, url:str):
 # Supporting functionality - summerizer 
 # this is map-reduce summerizer
 def summarize(objective:str, content:str):
+    print("Summarizing...")
     llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k-0613")
     text_splitter = RecursiveCharacterTextSplitter(separators=['\n\n', '\n'], chunk_size=10000, chunk_overlap=500)
     docs = text_splitter.create_documents([content])
@@ -106,7 +108,7 @@ def summarize(objective:str, content:str):
         llm=llm,
         chain_type="map_reduce",
         map_prompt = map_prompt_template,
-        verbose=False
+        verbose=True
     )
     
     output = summary_chain.run(input_documents = docs, objective=objective)
@@ -159,6 +161,7 @@ agent_kwargs = {
 }
 
 llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k-0613")
+
 memory = ConversationSummaryBufferMemory(
     memory_key="memory",
     return_messages=True,
@@ -171,6 +174,7 @@ agent = initialize_agent(
     llm=llm,
     agent=AgentType.OPENAI_FUNCTIONS,
     verbose=True,
+    max_iterations=3,
     agent_kwargs=agent_kwargs,
     memory=memory
 )
@@ -179,14 +183,19 @@ app = FastAPI()
 class Query(BaseModel):
     query: str
 
+# class LLMResponse(BaseModel):
+#     output: str
+
 @app.post('/')
 async def research(query: Query):
-    content = agent({"input": query})
-    print(content)
-    return content
+    results = agent({"input": query.query})
+    return results
 
 
 
 # if __name__ == "__main__":
-#     run(app)
+#     query = input("Enter the query : ")
+#     content = agent(query)
+#     print(type(content))
+#     content 
 #     # search(query)
