@@ -275,11 +275,9 @@ async def research(query: Query):
 @app.post('/telegram')
 async def splitText(text: Query):
     messages = text.query.split("\n\n")
-    print(messages)
     messages = [s.replace('. ', '.\n\n') for s in messages]
-    print(messages)
     messages = [s.replace('**', '') for s in messages]
-    print(messages)
+    return messages
 
 # if __name__ == "__main__":
 #     query = input("Enter the query : ")
