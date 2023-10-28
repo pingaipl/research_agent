@@ -182,10 +182,11 @@ class Query(BaseModel):
 @app.post('/')
 async def research(query: Query):
     content = agent({"input": query})
+    print(content)
     return content
 
 
 
-if __name__ == "__main__":
-    run(app)
-    # search(query)
+# if __name__ == "__main__":
+#     run(app)
+#     # search(query)
